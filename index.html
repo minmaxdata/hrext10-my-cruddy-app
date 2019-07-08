@@ -1,18 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>HREXT10 R00lz!</title>
-  <script
-          src="https://code.jquery.com/jquery-3.3.1.js"
-          integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-          crossorigin="anonymous"></script>
+  <title>HREXT10 FlashCards</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="css/style.css">
- </head>
+</head>
+
 <body class="m-3">
   <div class="container">
+    <h3>FlashCards</h3>
+    <h4>Enter a topic for your Flashcard Deck</h4>
+
+    <div class="row mb-3">
+      <div class="input-group col-sm-5">
+        <div class="input-group-prepend">
+          <label class="input-group-text">Topic</label>
+        </div>
+        <input class="topic form-control" type="text">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <button class="deck-topic btn btn-success btn-sm mr-2 col-sm-2">Submit</button>
+    </div>
+    <hr />
+    <h3>Local Storage Manager</h3>
     <div class="row mb-3">
       <div class="input-group col-sm-5">
         <div class="input-group-prepend">
@@ -49,4 +66,5 @@
   </div>
   <script src="app/app.js"></script>
 </body>
+
 </html>
