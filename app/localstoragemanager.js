@@ -24,7 +24,6 @@ var clearDatabase = function () {
 }
 
 var showDatabaseContents = function () {
-    console.log('show database contents', window.localStorage.length)
     $('tbody').html('');
 
     for (var i = 0; i < window.localStorage.length; i++) {
@@ -49,6 +48,7 @@ var getValueInput = function () {
 var resetInputs = function () {
     $('.key').val('');
     $('.value').val('');
+    $('.topic').val('');
 }
 
 
