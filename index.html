@@ -15,6 +15,10 @@
 <body class="m-3">
   <div class="container">
     <h3>FlashCards</h3>
+    <div class="row mb-3">
+      <div class="cards d-flex flex-row flex-wrap"></div>
+    </div>
+
     <h4>Enter a topic for your Flashcards</h4>
 
     <div class="row mb-3">
@@ -26,11 +30,32 @@
         <button class="deck-topic btn btn-success btn-sm mr-2 col-sm-3">Submit</button>
       </div>
     </div>
-    <div class="row mb-3">
-      <div class="decks d-flex flex-row flex-wrap">
+    <div class="card-fields">
+      <h4>Add A Card to your Deck</h4>
 
+      <div class="row mb-3">
+        <div class="input-group col-sm-12">
+          <div class="input-group-prepend">
+            <label class="input-group-text">Question</label>
+          </div>
+          <input class="question form-control" type="text">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="input-group col-sm-12">
+          <div class="input-group-prepend">
+            <label class="input-group-text">Answer</label>
+          </div>
+          <input class="answer form-control" type="text">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="input-group col-sm-12">
+          <button class="quanda btn btn-success btn-sm mr-2 col-sm-3">Add Card</button>
+        </div>
       </div>
     </div>
+
     <hr />
     <h3>Local Storage Manager</h3>
     <div class="row mb-3">

@@ -23,6 +23,10 @@ var clearDatabase = function () {
     return window.localStorage.clear();
 }
 
+var getItem = function(key) {
+    return window.localStorage.getItem(key)
+}
+
 var showDatabaseContents = function () {
     $('tbody').html('');
 
@@ -36,6 +40,7 @@ var keyExists = function (key) {
     return window.localStorage.getItem(key) !== null
 }
 
+
 var getKeyInput = function () {
     return $('.key').val();
 }
@@ -48,7 +53,6 @@ var getValueInput = function () {
 var resetInputs = function () {
     $('.key').val('');
     $('.value').val('');
-    $('.topic').val('');
 }
 
 
