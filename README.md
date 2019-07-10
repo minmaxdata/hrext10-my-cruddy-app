@@ -18,8 +18,8 @@ Create Read Update and Delete framework using JS
 - [x] add a topic field for creating a deck
 - [x] add in logic to add an id to refer to the deck
 - [x] create the ui for displaying deck
-- [ ] add fields for creating cards for the deck
-- [ ] create ui for displaying cards
+- [x] add fields for creating cards for the deck
+- [ ] create ui for displaying questions and answer
 
  ### Advanced Reqs
 - [ ] add in a modal for viewing decks

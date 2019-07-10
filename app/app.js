@@ -39,7 +39,7 @@ $.getScript('./app/localstoragemanager.js', function () {
       if (window.localStorage.key(i).includes('deck+')) {
         var $card = $('<div class="card m-2 w-25"></div>');
         var $cardbody = $('<div class="card-body"></div>');
-        var $cardtext = $('<p class="card-body text-justify"></p>');
+        var $cardtext = $('<div class="card-text"></div>');
         var key = window.localStorage.key(i);
         $card.attr('data-id', key);
         var deck = JSON.parse(window.localStorage.getItem(key))
@@ -47,30 +47,31 @@ $.getScript('./app/localstoragemanager.js', function () {
         $cardbody.text(value);
         $cardbody.appendTo($card);
 
-        $cardtext.text(deck[value].length + ` card(s)`);
-        $cardtext.appendTo($card);
-         $card.appendTo($('.cards'));
+        $cardtext.text(`cards: ` + deck[value].length );
+        $cardtext.appendTo($cardbody);
+        $card.appendTo($('.cards'));
       }
     }
   }
-
+  $('#myTab a').on('click', function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+  })
   $('.deck-topic').click(function () {
-    //TODO: add in validation check for input
+    //TODO: add field validation check for input
     createItem(generateDeckId(), formatDeckTopicJSON(getDeckTopicInput()));
     resetInputs();
     showDecks();
   });
 
   $('.cards').on('click', '.card.m-2', function (event) {
-    //display add card ui
-    console.log('click ', this);
     var id =  getDeckId($(this));
     setDeckId($('.quanda'),id);
     $(".card-fields").show();
   });
 
   $('.quanda').click(function () {
-    //TODO: enter validation
+    //TODO: add field validation
     var id = getDeckId($('.quanda'));
     var deck = JSON.parse(getItem(id));
     var card = {
