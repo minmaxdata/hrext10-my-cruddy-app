@@ -22,3 +22,6 @@ label {
 .card-fields {
     display: none;
 }
+.card:hover {
+    background-color: aliceblue
+}

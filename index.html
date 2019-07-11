@@ -49,34 +49,9 @@
             <button class="deck-topic btn btn-success btn-sm mr-2 col-sm-3">Submit</button>
           </div>
         </div>
-        <div class="card-fields">
-          <h4>Add A Card to your Deck</h4>
-
-          <div class="row mb-3">
-            <div class="input-group col-sm-12">
-              <div class="input-group-prepend">
-                <label class="input-group-text">Question</label>
-              </div>
-              <input class="question form-control" type="text">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="input-group col-sm-12">
-              <div class="input-group-prepend">
-                <label class="input-group-text">Answer</label>
-              </div>
-              <input class="answer form-control" type="text">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="input-group col-sm-12">
-              <button class="quanda btn btn-success btn-sm mr-2 col-sm-3">Add Card</button>
-            </div>
-          </div>
-        </div>
       </div>
-
       <div class="tab-pane" id="localstorage" role="tabpanel">
+        <h3>LocalStorage</h3>
         <div class="row mb-3">
           <div class="input-group col-sm-5">
             <div class="input-group-prepend">
@@ -113,6 +88,67 @@
       </div>
     </div>
   </div>
+  <!-- modal -->
+  <div id="showcardmodal" class="modal fade" role="dialog" aria-labelledby="Showcardmodal" tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5>Add A Card to your Deck</h5>
+          <div class="row m-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Question</label>
+              </div>
+              <input class="question form-control" type="text">
+            </div>
+          </div>
+          <div class="row m-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <label class="input-group-text">Answer</label>
+              </div>
+              <input class="answer form-control" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id='add'>Add Card</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal -->
+  <div id="takequizmodal" class="modal fade" role="dialog" aria-labelledby="takequizmodal" tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5>Quiz your deck</h5>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app/app.js"></script>
 </body>
 

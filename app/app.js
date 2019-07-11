@@ -20,60 +20,71 @@ $.getScript('./app/localstoragemanager.js', function () {
   var getCardAnswer = function () {
     return $('.answer').val();
   }
-  var getDeckId = function(el) {
-    return $(el).attr('data-id');
+  var getDeckId = function (el) {
+    return $(el).data('id');
   }
-  var setDeckId = function(el, id) {
-    $(el).attr('data-id', id);
+  var setDeckId = function (el, id) {
+    $(el).data('id', id);
   }
-  var formatDeckTopicJSON = function (id) {
-    var json = {};
-    json[id] = [];
-    return JSON.stringify(json);
+  var parseDeck = function (card) {
+    return JSON.parse(card);
   }
-
+  var stringifyDeck = function (card) {
+    return JSON.stringify(card);
+  }
+  var getDeck = function (id) {
+    return window.localStorage.getItem(id)
+  }
 
   var showDecks = function () {
-    $('.cards').html('');
+    $('.cards').empty();
     for (var i = 0; i < window.localStorage.length; i++) {
       if (window.localStorage.key(i).includes('deck+')) {
-        var $card = $('<div class="card m-2 w-25"></div>');
+
+        var $card = $('<div class="card m-2 w-25" ></div>');
         var $cardbody = $('<div class="card-body"></div>');
         var $cardtext = $('<div class="card-text"></div>');
+        var $addcard = $('<button type="button" class="btn btn-light mt-2">Add Card</button>');
+        var $takequiz = $('<button type="button" class="btn btn-light mt-2">Take Quiz</button>');
+
         var key = window.localStorage.key(i);
-        $card.attr('data-id', key);
-        var deck = JSON.parse(window.localStorage.getItem(key))
-        var value = Object.keys(deck);
-        $cardbody.text(value);
+        var deck = parseDeck(getDeck(key))
+        var topic = Object.keys(deck);
+
+        $addcard.attr('data-id', key);
+        $addcard.attr('data-toggle', 'modal');
+        $addcard.attr('data-target', '#showcardmodal');
+
+        $takequiz.attr('data-id', key);
+        $takequiz.attr('data-toggle', 'modal');
+        $takequiz.attr('data-target', '#takequizmodal');
+
+        $cardbody.text(topic);
         $cardbody.appendTo($card);
 
-        $cardtext.text(`cards: ` + deck[value].length );
+        $cardtext.text(`cards: ` + deck[topic].length);
         $cardtext.appendTo($cardbody);
+        $addcard.appendTo($cardbody);
+        $takequiz.appendTo($cardbody);
         $card.appendTo($('.cards'));
       }
     }
   }
-  $('#myTab a').on('click', function (e) {
-    e.preventDefault()
-    $(this).tab('show')
-  })
-  $('.deck-topic').click(function () {
-    //TODO: add field validation check for input
-    createItem(generateDeckId(), formatDeckTopicJSON(getDeckTopicInput()));
-    resetInputs();
-    showDecks();
-  });
+  var showCard = function (event, $modal) {
+    var $element = $(event.relatedTarget);  // element that triggered the modal
+    var id = getDeckId($element);
+    var card = parseDeck(getItem(id));
+    var topic = Object.keys(card);
+    var bodycontent = ' total: ' + card[topic].length;
+    $modal.find('.modal-title').text(`Flashcard: ${topic} ${bodycontent}`);
 
-  $('.cards').on('click', '.card.m-2', function (event) {
-    var id =  getDeckId($(this));
-    setDeckId($('.quanda'),id);
-    $(".card-fields").show();
-  });
-
-  $('.quanda').click(function () {
-    //TODO: add field validation
-    var id = getDeckId($('.quanda'));
-    var deck = JSON.parse(getItem(id));
+    var $button = $modal.find('.modal-footer button#add')
+    $($button).data('id', id);
+  }
+  var addCard = function ($modal) {
+     //TODO: add field validation
+    var id = getDeckId($modal);
+    var deck = parseDeck(getItem(id));
     var card = {
       'question': getCardQuestion(),
       'answer': getCardAnswer()
@@ -81,13 +92,36 @@ $.getScript('./app/localstoragemanager.js', function () {
     var keys = Object.keys(deck);
     deck[keys[0]].push(card);
 
-    updateItem(id, JSON.stringify(deck));
+    updateItem(id, stringifyDeck(deck));
     resetInputs();
     showDatabaseContents();
     showDecks();
-    $(".card-fields").hide();
+  }
+  $("#takequizmodal").on('show.bs.modal', function (event) {
+    showCard(event, $(this))
+  });
+  $("#showcardmodal").on('show.bs.modal', function (event) {
+    showCard(event, $(this))
+  });
 
+  $("#showcardmodal").on('click', 'button', function (event) {
+    addCard($(this))
+  });
+
+  $('#myTab a').on('click', function (e) {
+    e.preventDefault()
+    $(this).tab('show')
   })
+
+  $('.deck-topic').click(function () {
+    //TODO: add field validation check for input
+    var topic = getDeckTopicInput();
+    var deck = {};
+    deck[topic] = [];
+    createItem(generateDeckId(), stringifyDeck(deck));
+    resetInputs();
+    showDecks();
+  });
 
   showDatabaseContents();
   showDecks();
