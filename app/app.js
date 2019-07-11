@@ -75,14 +75,14 @@ $.getScript('./app/localstoragemanager.js', function () {
     var id = getDeckId($element);
     var card = parseDeck(getItem(id));
     var topic = Object.keys(card);
-    var bodycontent = ' total: ' + card[topic].length;
-    $modal.find('.modal-title').text(`Flashcard: ${topic} ${bodycontent}`);
+    var cardcount = ' total: ' + card[topic].length;
+    $modal.find('.modal-title').text(`Flashcard: ${topic} ${cardcount}`);
 
     var $button = $modal.find('.modal-footer button#add')
     $($button).data('id', id);
   }
   var addCard = function ($modal) {
-     //TODO: add field validation
+    //TODO: add field validation
     var id = getDeckId($modal);
     var deck = parseDeck(getItem(id));
     var card = {
@@ -97,8 +97,26 @@ $.getScript('./app/localstoragemanager.js', function () {
     showDatabaseContents();
     showDecks();
   }
+
+  var showQuiz = function (event, $modal) {
+    console.log(' show quiz ', event, $modal);
+    var $element = $(event.relatedTarget);  // element that triggered the modal
+    var id = getDeckId($element);
+    var card = parseDeck(getItem(id));
+    var topic = Object.keys(card);
+    var cardcount = ' total: ' + card[topic].length;
+    var question = `Question: ${card[topic][0].question}`;
+    var answer = `Answer: ${card[topic][0].answer}`;
+    var $qDiv = $('<div class="question"></div>');
+    var $aDiv = $('<div class="answer"></div>');
+    $qDiv.text(question);
+    $aDiv.text(answer);
+    $modal.find('.modal-title').text(`Flashcard: ${topic} ${cardcount}`);
+    $modal.find('.modal-body').empty().append($qDiv).append($aDiv);
+  }
+
   $("#takequizmodal").on('show.bs.modal', function (event) {
-    showCard(event, $(this))
+    showQuiz(event, $(this))
   });
   $("#showcardmodal").on('show.bs.modal', function (event) {
     showCard(event, $(this))
