@@ -2,6 +2,9 @@ var resetInputs = function () {
   $('.topic').val('');
   $('.question').val('');
   $('.answer').val('');
+  $('.key').val('');
+  $('.value').val('');
+
 }
 var getLocalStorageLength = function () {
   return window.localStorage.length;
@@ -48,6 +51,9 @@ var showDecks = function () {
       var key = window.localStorage.key(i);
       var deck = parseDeck(getDeck(key))
       var topic = Object.keys(deck);
+      if (deck[topic].length === 0) {
+        $takequiz.attr('disabled', 'true');
+      }
 
       $addcard.attr('data-id', key);
       $addcard.attr('data-toggle', 'modal');
@@ -60,7 +66,7 @@ var showDecks = function () {
       $cardbody.text(topic);
       $cardbody.appendTo($card);
 
-      $cardtext.text(`cards: ` + deck[topic].length);
+      $cardtext.text(`Cards: ` + deck[topic].length);
       $cardtext.appendTo($cardbody);
       $addcard.appendTo($cardbody);
       $takequiz.appendTo($cardbody);
@@ -68,6 +74,7 @@ var showDecks = function () {
     }
   }
 }
+
 var showCard = function (event, $modal) {
   var $element = $(event.relatedTarget);  // element that triggered the modal
   var id = getDeckId($element);
@@ -78,6 +85,7 @@ var showCard = function (event, $modal) {
   var $button = $modal.find('.modal-footer button#add')
   $($button).data('id', id);
 }
+
 var addCard = function ($modal) {
   //TODO: add field validation
   var id = getDeckId($modal);
@@ -107,12 +115,13 @@ var showQuiz = function (event, $modal) {
 
   card[topic].map(function (item, i) {
     var $qDiv = $('<div class="question"></div>');
-    var $aDiv = $('<div class="answer"></div>');
+    var $aDiv = $('<div class="answr"></div>');
+    var $hideAnswer = $('<div class="show_hide" onclick="show()">Show Answer</div><br />');
     var $true = $('<input type="radio" checked value="true"> <label>True</label>');
     var $false = $('<input type="radio" value="false"> <label>False</label>');
     var $newDiv = $('<div></div>');
-    $false.attr('name', 'q'+i)
-    $true.attr('name', 'q'+i)
+    $false.attr('name', 'q' + i)
+    $true.attr('name', 'q' + i)
 
     $newDiv.text('Question #' + (i + 1));
     var question = `Question: ${item.question}`;
@@ -121,6 +130,7 @@ var showQuiz = function (event, $modal) {
     $aDiv.text(answer);
     $newDiv.append($qDiv);
     $newDiv.append($aDiv);
+    $newDiv.append($hideAnswer);
     $newDiv.append($true);
     $newDiv.append($false);
     $parentDiv.append($newDiv);
@@ -128,27 +138,35 @@ var showQuiz = function (event, $modal) {
   $modal.find('.modal-body').empty().append($parentDiv);
 }
 
-var submit = function (event) {
+var submit = function () {
   var inputs;
   $("#quizform").each(function () {
     inputs = $(this).find(':checked'); //<-- Should return all input elements in that specific form.
 
   });
   var count = 0;
-  inputs.each(function(item, el) {
-    if($(el).val() === 'true') count++;
+  inputs.each(function (item, el) {
+    if ($(el).val() === 'true') count++;
   });
   $results = $('<div></div>');
   $results.text(count + ' correct choices out of ' + inputs.length);
   $('#quizform').empty().append($results);
 }
+var show = function () {
+  var showMe = $('#quizform').find('.answr');
+  var hideMe = $('#quizform').find('.show_hide');
+  $(showMe).toggle('slow');
+  $(hideMe).toggle('slow');
+
+}
+
 $("#takequizmodal").on('show.bs.modal', function (event) {
   showQuiz(event, $(this))
 });
 $("#showcardmodal").on('show.bs.modal', function (event) {
   showCard(event, $(this))
 });
-$("#showcardmodal").on('click', 'button', function (event) {
+$("#showcardmodal").on('click', 'button#add', function (event) {
   addCard($(this))
 });
 $('#myTab a').on('click', function (e) {
