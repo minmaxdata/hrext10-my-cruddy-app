@@ -1,110 +1,189 @@
-/*
+var resetInputs = function () {
+  $('.topic').val('');
+  $('.question').val('');
+  $('.answer').val('');
+  $('.key').val('');
+  $('.value').val('');
 
- ### Basic Reqs
-- [ ] Where to store data? (localstorage)
-- [ ] How to modify data? (update action, delete action)
-
-*/
-
-//localStorage functions
-var createItem = function(key, value) {
-  return window.localStorage.setItem(key, value);
+}
+var getLocalStorageLength = function () {
+  return window.localStorage.length;
+}
+var generateDeckId = function () {
+  return 'deck+' + getLocalStorageLength();
+}
+var getDeckTopicInput = function () {
+  return $('.topic').val();
+}
+var getCardQuestion = function () {
+  return $('.question').val();
+}
+var getCardAnswer = function () {
+  return $('.answer').val();
+}
+var getDeckId = function (el) {
+  return $(el).data('id');
+}
+var setDeckId = function (el, id) {
+  $(el).data('id', id);
+}
+var parseDeck = function (card) {
+  return JSON.parse(card);
+}
+var stringifyDeck = function (card) {
+  return JSON.stringify(card);
+}
+var getDeck = function (id) {
+  return window.localStorage.getItem(id)
 }
 
-var updateItem = function(key, value) {
-  return window.localStorage.setItem(key, value);
-}
-
-var deleteItem = function(key) {
-  return window.localStorage.removeItem(key);
-}
-
-var clearDatabase = function() {
-  return window.localStorage.clear();
-}
-
-var showDatabaseContents = function() {
-  $('tbody').html('');
-
+var showDecks = function () {
+  $('.cards').empty();
   for (var i = 0; i < window.localStorage.length; i++) {
-    var key = window.localStorage.key(i);
-    $('tbody').append(`<tr><td>${key}</td><td>${window.localStorage.getItem(key)}</td></tr>`)
+    if (window.localStorage.key(i).includes('deck+')) {
+
+      var $card = $('<div class="card m-2 w-25" ></div>');
+      var $cardbody = $('<div class="card-body"></div>');
+      var $cardtext = $('<div class="card-text"></div>');
+      var $addcard = $('<button type="button" class="btn btn-light mt-2">Add Card</button>');
+      var $takequiz = $('<button type="button" class="btn btn-light mt-2">Take Quiz</button>');
+
+      var key = window.localStorage.key(i);
+      var deck = parseDeck(getDeck(key))
+      var topic = Object.keys(deck);
+      if (deck[topic].length === 0) {
+        $takequiz.attr('disabled', 'true');
+      }
+
+      $addcard.attr('data-id', key);
+      $addcard.attr('data-toggle', 'modal');
+      $addcard.attr('data-target', '#showcardmodal');
+
+      $takequiz.attr('data-id', key);
+      $takequiz.attr('data-toggle', 'modal');
+      $takequiz.attr('data-target', '#takequizmodal');
+
+      $cardbody.text(topic);
+      $cardbody.appendTo($card);
+
+      $cardtext.text(`Cards: ` + deck[topic].length);
+      $cardtext.appendTo($cardbody);
+      $addcard.appendTo($cardbody);
+      $takequiz.appendTo($cardbody);
+      $card.appendTo($('.cards'));
+    }
   }
 }
 
-var keyExists = function(key) {
-  return window.localStorage.getItem(key) !== null
+var showCard = function (event, $modal) {
+  var $element = $(event.relatedTarget);  // element that triggered the modal
+  var id = getDeckId($element);
+  var card = parseDeck(getItem(id));
+  var topic = Object.keys(card);
+  $modal.find('.modal-title').text(`Flashcard: ${topic}`);
+
+  var $button = $modal.find('.modal-footer button#add')
+  $($button).data('id', id);
 }
 
-var getKeyInput = function() {
-  return $('.key').val();
-}
+var addCard = function ($modal) {
+  //TODO: add field validation
+  var id = getDeckId($modal);
+  var deck = parseDeck(getItem(id));
+  var card = {
+    'question': getCardQuestion(),
+    'answer': getCardAnswer()
+  };
+  var keys = Object.keys(deck);
+  deck[keys[0]].push(card);
 
-var getValueInput = function() {
-  return $('.value').val();
-}
-
-var resetInputs = function() {
-  $('.key').val('');
-  $('.value').val('');
-}
-
-$(document).ready(function() {
+  updateItem(id, stringifyDeck(deck));
+  resetInputs();
   showDatabaseContents();
+  showDecks();
+}
 
-  $('.create').click(function() {
-    if (getKeyInput() !== '' && getValueInput() !== '') {
-      if (keyExists(getKeyInput())) {
-        if(confirm('key already exists in database, do you want to update instead?')) {
-          updateItem(getKeyInput(), getValueInput());
-          showDatabaseContents();
-        }
-      } else {
-        createItem(getKeyInput(), getValueInput());
-        showDatabaseContents();
-        resetInputs();
-      }
-    } else  {
-      alert('key and value must not be blank');
-    }
+var showQuiz = function (event, $modal) {
+  var $element = $(event.relatedTarget);  // element that triggered the modal
+  var id = getDeckId($element);
+  var card = parseDeck(getItem(id));
+  var topic = Object.keys(card);
+  var cardcount = ' total: ' + card[topic].length;
+  $modal.find('.modal-title').text(`Flashcard: ${topic} ${cardcount}`);
+  /// questions
+  var $parentDiv = $('<form id="quizform" class="Q&A"></form>');
+
+  card[topic].map(function (item, i) {
+    var $qDiv = $('<div class="question"></div>');
+    var $aDiv = $('<div class="answr"></div>');
+    var $hideAnswer = $('<div class="show_hide" onclick="show()">Show Answer</div><br />');
+    var $true = $('<input type="radio" checked value="true"> <label>True</label>');
+    var $false = $('<input type="radio" value="false"> <label>False</label>');
+    var $newDiv = $('<div></div>');
+    $false.attr('name', 'q' + i)
+    $true.attr('name', 'q' + i)
+
+    $newDiv.text('Question #' + (i + 1));
+    var question = `Question: ${item.question}`;
+    var answer = `Answer: ${item.answer}`;
+    $qDiv.text(question);
+    $aDiv.text(answer);
+    $newDiv.append($qDiv);
+    $newDiv.append($aDiv);
+    $newDiv.append($hideAnswer);
+    $newDiv.append($true);
+    $newDiv.append($false);
+    $parentDiv.append($newDiv);
   });
+  $modal.find('.modal-body').empty().append($parentDiv);
+}
 
-  $('.update').click(function() {
-    if (getKeyInput() !== '' && getValueInput() !== '') {
-      if (keyExists(getKeyInput())) {
-        updateItem(getKeyInput(), getValueInput());
-        showDatabaseContents();
-        resetInputs();
-      } else {
-        alert('key does not exist in database');
-      }
-    } else {
-      alert('key and value must not be blank');
-    }
+var submit = function () {
+  var inputs;
+  $("#quizform").each(function () {
+    inputs = $(this).find(':checked'); //<-- Should return all input elements in that specific form.
+
   });
-
-  $('.delete').click(function() {
-     if (getKeyInput() !== '') {
-      if (keyExists(getKeyInput())) {
-        deleteItem(getKeyInput());
-        showDatabaseContents();
-        resetInputs();
-      } else {
-        alert('key does not exist in database');
-      }
-    } else {
-      alert('key must not be blank');
-    }
+  var count = 0;
+  inputs.each(function (item, el) {
+    if ($(el).val() === 'true') count++;
   });
+  $results = $('<div></div>');
+  $results.text(count + ' correct choices out of ' + inputs.length);
+  $('#quizform').empty().append($results);
+}
+var show = function () {
+  var showMe = $('#quizform').find('.answr');
+  var hideMe = $('#quizform').find('.show_hide');
+  $(showMe).toggle('slow');
+  $(hideMe).toggle('slow');
 
-  $('.reset').click(function() {
-    resetInputs();
-  })
+}
 
-  $('.clear').click(function() {
-    if (confirm('WARNING: Are you sure you want to clear the database? \n                THIS ACTION CANNOT BE UNDONE')) {
-      clearDatabase();
-      showDatabaseContents();
-    }
-  })
+$("#takequizmodal").on('show.bs.modal', function (event) {
+  showQuiz(event, $(this))
+});
+$("#showcardmodal").on('show.bs.modal', function (event) {
+  showCard(event, $(this))
+});
+$("#showcardmodal").on('click', 'button#add', function (event) {
+  addCard($(this))
+});
+$('#myTab a').on('click', function (e) {
+  e.preventDefault();
+  showDatabaseContents();
+  showDecks();
+  $(this).tab('show');
 })
+$('.deck-topic').click(function () {
+  //TODO: add field validation check for input
+  var topic = getDeckTopicInput();
+  var deck = {};
+  deck[topic] = [];
+  createItem(generateDeckId(), stringifyDeck(deck));
+  resetInputs();
+  showDecks();
+});
+
+showDecks();
+

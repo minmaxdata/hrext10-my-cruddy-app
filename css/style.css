@@ -11,10 +11,13 @@ inputs (border swag)
 https://getbootstrap.com/docs/4.3/getting-started/introduction/
 */
 
-th {
-  text-decoration: underline;
+.card:hover {
+    background-color: aliceblue
 }
-
-label {
-  text-decoration: underline;
+.answr {
+    display: none;
+}
+.show_hide{
+    color: blue;
+    text-decoration: underline;
 }
